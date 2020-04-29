@@ -1,0 +1,51 @@
+import requests, json, pprint, datetime
+
+myName = ''
+stats = ''
+date = ''
+
+def intro(): #Makes the program more user friendly by giving an intro and asking for their name.
+
+    global myName
+    print('Hi! Welcome to COVID-19 tracker. During these tough times, we want to provide you with the most up to date information.')
+    print ('Please introduce yourself, what is your name?')
+    myName = input()
+
+def PickACountry():
+
+    global stats
+    print(myName + ', please enter a country you would like to receive information regarding COVID-19.') #United States = US
+    stats = input()
+    URL = f'https://thevirustracker.com/free-api?countryTimeline={stats}'
+    response = requests.get(URL)
+    response.raise_for_status
+    return response
+
+def PickADate():
+
+    global date
+    print('This COVID-19 tracker is updated at the end of each day and thus the most recent information is for yesterdays date.')
+    print('Please enter any date starting from the first reported COVID-19 case in the country you are seeking information about until yesterdays date.')
+    print('For example if you are inquiring about the US: the first reported COVID-19 case was on 1/22/20...So you may enter any date between that and yesterdays date.')
+    print('Enter the date you would like to receive information about.')
+    print('Using this format: X/XX/XX.')
+    date = str(input())
+
+def getInfo(jsonData):
+
+    coronaList = []
+    coronaList.append(jsonData['countrytimelinedata'][0]['info']['title'])
+    coronaList.append(jsonData['countrytimelinedata'][0]['info']['source'])
+    coronaList.append(jsonData['timelineitems'][0][date])
+
+    for x in range(len(coronaList)):
+        print(coronaList[x])
+        if x == 1:
+            print('Please see the information regarding COVID-19 below for ' + date + ' in the ' + stats + ':')
+
+intro()
+response = PickACountry()
+PickADate()
+jsonData = json.loads(response.text)
+getInfo(jsonData)
+#pprint.pprint(jsonData)
