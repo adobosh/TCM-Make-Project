@@ -1,0 +1,139 @@
+import requests, json, pprint, datetime, time
+
+myName = ''
+stats = ''
+date = ''
+
+def intro(): #Makes the program more user friendly by giving an intro and asking for their name.
+
+    global myName
+    print('Hi! Welcome to COVID-19 tracker. During these tough times, we want to provide you with the most up to date information.')
+    print ('Please introduce yourself, what is your name?')
+    myName = input()
+
+def PickACountry():
+
+    global stats
+    print(myName + ', please enter a country you would like to receive information regarding COVID-19.') #United States = US
+    stats = input()
+    URL = f'https://thevirustracker.com/free-api?countryTimeline={stats}'
+    response = requests.get(URL)
+    response.raise_for_status
+    return response
+
+def PickADate():
+
+    global date
+    print('This COVID-19 tracker is updated at the end of each day and thus the most recent information is for yesterdays date.')
+    time.sleep(1)
+    print('Please enter any date starting from the first reported COVID-19 case in the country you are seeking information about until yesterdays date.')
+    time.sleep(1)
+    print('For example if you are inquiring about the US: the first reported COVID-19 case was on 1/22/20...So you may enter any date between that and yesterdays date.')
+    time.sleep(1)
+    print('Enter the date you would like to receive information about.')
+    print('Using this format: M/DD/YY.')
+    date = str(input())
+
+def getInfo(jsonData):
+
+    coronaList = []
+    coronaList.append(jsonData['countrytimelinedata'][0]['info']['title'])
+    coronaList.append(jsonData['countrytimelinedata'][0]['info']['source'])
+    coronaList.append(jsonData['timelineitems'][0][date])
+
+    for x in range(len(coronaList)):
+        print(coronaList[x])
+        if x == 1:
+            print('Please see the information regarding COVID-19 below for ' + date + ' in the ' + stats + ':')
+
+def SymptomsInfo():
+    check = ''
+    while check != '0' and check != '1':
+        print('To make sure that you are safe in (the) ' + stats + ' I will ask some questions regarding COVID-19 symptoms. ' + myName + ', would you like to proceed? (N=0 or Y=1)')
+        check = input()
+
+        if check == '0':
+            print('Ok, thank you for using the COVID-19 tracker. Stay safe!')
+
+        if check == '1':
+
+            print('Great, there will be 8 questions.')
+            time.sleep(1)
+
+            print('Have you gone on a trip recently? (N=0 or Y=1)')
+            trip = input()
+            if trip == '0':
+                print('Great!')
+            elif trip == '1':
+                print('Where to?')
+                trip1 = input()
+
+            print('What is your temperature?')
+            temperature = input()
+            if int(temperature) == 98.6:
+                print('You dont have a fever, thats great news!')
+            if int(temperature) < 98.6:
+                print('You dont have a fever, thats great news!')
+            elif int(temperature) > 98.6:
+                print('Oh no, you have a fever!')
+
+            print('Do you have a cough? (N=0 or Y=1)')
+            cough = input()
+            if cough == '0':
+                print('Amazing!')
+                print('Although you dont have a cough, do you have a sore throat? (N=0 or Y=1)')
+                sore = input()
+                if sore == '0':
+                    print('Nice to hear!')
+                elif sore == '1':
+                    print('Try gargling or drinking warm liquids!')
+            elif cough == '1':
+                print('Make sure to cover your mouth and keep sanitizing!')
+                print('Do you also have a sore throat? (N=0 or Y=1)')
+                sore1 = input()
+                if sore1 == '0':
+                    print('Nice to hear!')
+                elif sore1 == '1':
+                    print('Try gargling or drinking warm liquids!')
+
+            print('Do you have shortness of breath or difficulty breathing? (N=0 or Y=1)')
+            breath = input()
+            if breath == '0':
+                print('Thats good news!')
+            elif breath == '1':
+                print('Try pursed lip or diaphragmatic breathing, sitting forward, standing with a supported back or arms, sleeping in a relaxed position!')
+
+            print('Do you have chills? (N=0 or Y=1)')
+            chills = input()
+            if chills == '0':
+                print('Thats great news!')
+            elif chills == '1':
+                print('Oh no! Get some rest with a light sheet and drink fluids.')
+
+            print('Do you have headache? (N=0 or Y=1)')
+            headache = input()
+            if headache == '0':
+                print('Good to hear!')
+            elif headache == '1':
+                print('Try taking some pain medication and limiting screen time during social distancing!')
+
+            print('Lastly, have you recently lost your sense of taste or smell? ((N=0 or Y=1)')
+            sense = input()
+            if sense == '0':
+                print('Keep enjoying some yummy food during social distancing!')
+            if sense == '1':
+                print('Oh no, sorry to hear that!')
+
+            #if cough == '1' and breath == '1' or
+            #if trip == '1' and int(temperature) > 98.6:
+                #print('What city are you located in?')
+
+
+
+intro()
+response = PickACountry()
+PickADate()
+jsonData = json.loads(response.text)
+getInfo(jsonData)
+SymptomsInfo()
+#pprint.pprint(jsonData)
