@@ -1,0 +1,88 @@
+import requests, json, pprint
+
+def API():
+
+    print('Which state are you located in?')
+    print('These are the states we currently have available in our application: Arizona, California, Delaware, Florida, Massachusetts, Nevada,  New Jersey, New York, Pennsylvania, Texas, Utah, or Washington?')
+    print('If you are located in one of the above states please pick one to locate the state testing centers!')
+    place = input()
+    info = []
+    while not (place == 'Arizona' or place == 'arizona' or place == 'California' or place == 'california' or place == 'Delaware' or place == 'delaware' or place == 'Florida' or place == 'florida' or place == 'Massachusetts' or place == 'massachusetts' or place == 'New Jersey' or place == 'new jersey' or place == 'New York' or place == 'new york' or place == 'Nevada' or place == 'nevada' or place == 'Pennsylvania' or place == 'pennsylvania' or place == 'Texas' or place == 'texas' or place == 'Utah' or place == 'utah' or place == 'Washington' or place == 'washington'):
+        print('Sorry, that state is currently unavailable. Have a great rest of your day and keep adhering to the CDC guidelines. Thank you for using the COVID-19 tracker.')
+        place = input()
+    if place == 'Arizona' or place == 'arizona':
+        URL = f'https://covid-19-testing.github.io/locations/arizona/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'California' or place == 'california':
+        URL = f'https://covid-19-testing.github.io/locations/california/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'Delaware' or place == 'delaware':
+        URL = f'https://covid-19-testing.github.io/locations/delaware/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'Florida' or place == 'florida':
+        URL = f'https://covid-19-testing.github.io/locations/florida/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == ' Massachusetts' or place == 'massachusetts':
+        URL = f'https://covid-19-testing.github.io/locations/massachusetts/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'Nevada' or place == 'nevada':
+        URL = f'https://covid-19-testing.github.io/locations/nevada/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'New Jersey' or place == 'new-jersey':
+        URL = f'https://covid-19-testing.github.io/locations/new-jersey/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'New York' or place == 'new-york':
+        URL = f'https://covid-19-testing.github.io/locations/new-york/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'Nevada' or place == 'nevada':
+        URL = f'https://covid-19-testing.github.io/locations/nevada/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'Pennsylvania' or place == 'pennsylvania':
+        URL = f'https://covid-19-testing.github.io/locations/pennsylvania/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'Texas' or place == 'texas':
+        URL = f'https://covid-19-testing.github.io/locations/texas/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'Utah' or place == 'utah':
+        URL = f'https://covid-19-testing.github.io/locations/utah/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    if place == 'Washington' or place == 'washington':
+        URL = f'https://covid-19-testing.github.io/locations/washington/complete.json'
+        response = requests.get(URL)
+        response.raise_for_status
+        return response
+    
+def FormatCenters(jsonData):
+    for center in jsonData:
+        print(center['name'] + ': ' + center['description'])
+        print(center['physical_address'][0]['address_1'] + ', ' + center['physical_address'][0]['city'] + ', ' + center['physical_address'][0]['postal_code'])
+        print('---------------------')
+
+response = API()
+jsonData = json.loads(response.text)
+FormatCenters(jsonData)
+#pprint.pprint(jsonData)
