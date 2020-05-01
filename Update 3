@@ -1,3 +1,7 @@
+Added in some more global variables to make the program more user-friendly (name, date)
+I played around with some of the print statements and made sure the information from the API was showing up properly.
+
+
 import requests, json, pprint, datetime
 
 myName = ''
