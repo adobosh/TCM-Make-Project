@@ -1,0 +1,295 @@
+import requests, json, pprint, datetime, time
+
+myName = ''
+stats = ''
+date = ''
+check = ''
+age = ''
+health = ''
+trip = ''
+fever = ''
+cough = ''
+sore = ''
+breath = ''
+chills = ''
+headache = ''
+sense = ''
+find = ''
+find1 = ''
+score = ''
+info = ''
+
+def intro(): #Makes the program more user friendly by giving an intro and asking for their name.
+
+    global myName
+    print('Hi! Welcome to COVID-19 tracker. During these tough times, we want to provide you with up to date information.')
+    print('This COVID-19 tracker has capabilities to do a symptom check based on the symptoms outlined by the CDC and can help you find a testing center in select states within the US.')
+    print ('Please introduce yourself, what is your name?')
+    myName = input()
+
+def PickACountry():
+
+    global stats
+    print(myName + ', please enter a country you would like to receive information regarding COVID-19. (Input the country code - EX: United States = US)') #United States = US
+    stats = input()
+    URL = f'https://thevirustracker.com/free-api?countryTimeline={stats}'
+    response = requests.get(URL)
+    response.raise_for_status
+    return response
+
+def PickADate():
+
+    global date
+    print('This COVID-19 tracker is updated at the end of each day and thus the most recent information is for yesterdays date.')
+    time.sleep(1)
+    print('Please enter any date starting from the first reported COVID-19 case in the country you are seeking information about until yesterdays date.')
+    time.sleep(1)
+    print('For example, if you are inquiring about the US: the first reported COVID-19 case was on 1/22/20...So you may enter any date between that and yesterdays date.')
+    time.sleep(1)
+    print('Enter the date you would like to receive information about.')
+    print('Using this format: M/DD/YY.')
+    date = str(input())
+
+def getInfo(jsonData):
+
+    coronaList = []
+    #print('Information for:')
+    try:
+        coronaList.append(jsonData['countrytimelinedata'][0]['info']['title'])
+    except:
+        print('Error: we currently do not have this information. Please try again later.')
+        exit()
+    #print('Please see the information regarding COVID-19 below for ' + date + ':')
+    try:
+        coronaList.append(jsonData['timelineitems'][0][date])
+    except:
+        print('Error: we currently do not have this information. Please try again later.')
+        exit()
+    #print('Use this link if you would like to find out more information (source link):')
+    try:
+        coronaList.append(jsonData['countrytimelinedata'][0]['info']['source'])
+    except:
+        print('Error: we currently do not have this information. Please try again later.')
+
+    for x in range(len(coronaList)):
+        print(coronaList[x])
+        if x == 0:
+            print('Please see the information regarding COVID-19 below for ' + date + ' in the ' + stats + ':')
+        if x == 1:
+            print('Click this link if you would like more information about COVID-19 in your specific country (source).')
+
+def SymptomsInfo():
+
+    global check
+    global info
+    while check != '0' and check != '1':
+        print('To make sure that you are safe in (the) ' + stats + ' I will ask some questions regarding COVID-19 symptoms. ' + myName + ', would you like to proceed? (N=0 or Y=1).')
+        check = input()
+
+        if check == '0':
+            print('Would you like to see information about testing centers in your state?')
+            info = input()
+            if info == 'yes' or 'YES' or 'y' or 'Y' or 'Yes':
+                import symptoms
+            if info  == 'no' or 'NO' or 'n' or 'N' or 'No':
+                print('Thank you for using the COVID-19 tracker and please continue to adhere to the CDC guidelines. Stay safe and have a great rest of your day!')
+
+        if check == '1':
+
+            print('Great, there will be 10 questions.')
+            print('If we find that you show symptoms for COVID-19 we will give you the option to find a testing center (in the US only.)')
+            time.sleep(1)
+
+def QuestionOne():
+
+    global age
+    if check == '1':
+        while not (age == 1 or age == 0):
+            print('Are you older than 65? (N=0 or Y=1)')
+            age = input()
+            if age == '0':
+                print('The CDC has identified you as a lower risk individual for COVID-19.')
+                age = 0
+            elif age == '1':
+                print('The CDC has identified you as a higher risk indvidual for COVID-19.')
+                age = 1
+
+def QuestionTwo():
+
+    global health
+    if check == '1':
+        while not (health == 1 or health ==0):
+            print('Do you have any underlying health conditions? (N=0 or Y=1)')
+            health=input()
+            if health == '0':
+                print('Thats good news!')
+                health = 0
+            elif health =='1':
+                print('You may be at a higher risk, how long have you had this condition?')
+                health1 = input()
+                health = 1
+
+def QuestionThree():
+
+    global trip
+    if check == '1':
+        while not (trip == 1 or trip == 0):
+            print('Have you gone on a trip recently? (N=0 or Y=1)')
+            trip = input()
+            if trip == '0':
+                print('Great!')
+                trip = 0
+            elif trip == '1':
+                print('Where to?')
+                trip1 = input()
+                trip = 1
+
+def QuestionFour():
+
+    global fever
+    if check == '1':
+        while not (fever == 1 or fever == 0):
+            print('Do you have a fever - a body temperature greater than 98.6? (N=0 or Y=1).')
+            fever = input()
+            if fever == '0':
+                print('You dont have a fever, thats great news!')
+                fever = 0
+            elif fever == '1':
+                print('Oh no, drink lots of fluids!')
+                fever = 1
+
+def QuestionFive():
+
+    global cough
+    if check == '1':
+        while not (cough == 0 or cough == 1):
+            print('Do you have a cough? (N=0 or Y=1)')
+            cough = input()
+            if cough == '0':
+                print('Amazing!')
+                cough = 0
+            elif cough == '1':
+                print('Make sure to cover your mouth and keep sanitizing!')
+                cough = 1
+
+def QuestionFiveA():
+
+    global sore
+    if check == '1':
+        while not (sore == 0 or sore == 1):
+            print('Do you have a sore throat? N=0 or Y=1)')
+            sore = input()
+            if sore == '0':
+                print('Nice to hear!')
+                sore = 0
+            elif sore == '1':
+                print('Try gargling or drinking warm liquids!')
+                sore = 1
+
+def QuestionSix():
+
+    global breath
+    if check == '1':
+        while not (breath == 0 or breath == 1):
+            print('Do you have shortness of breath or difficulty breathing? (N=0 or Y=1)')
+            breath = input()
+            if breath == '0':
+                print('Thats good news!')
+                breath = 0
+            elif breath == '1':
+                print('Try pursed lip or diaphragmatic breathing, sitting forward, standing with a supported back or arms, sleeping in a relaxed position!')
+                breath = 1
+
+def QuestionSeven():
+
+    global chills
+    if check == '1':
+        while not (chills == 0 or chills == 1):
+            print('Do you have chills? (N=0 or Y=1)')
+            chills = input()
+            if chills == '0':
+                print('Thats great news!')
+                chills = 0
+            elif chills == '1':
+                print('Oh no! Get some rest with a light sheet and drink fluids.')
+                chills = 1
+
+def QuestionEight():
+
+    global headache
+    if check == '1':
+        while not (headache == 0 or headache == 1):
+            print('Have you had headaches recently/do you currently have a headache? (N=0 or Y=1)')
+            headache = input()
+            if headache == '0':
+                print('Good to hear!')
+                headache = 0
+            elif headache == '1':
+                print('Try taking some pain medication and limiting screen time during social distancing!')
+                headache = 1
+
+def QuestionNine():
+
+    global sense
+    if check == '1':
+        while not (sense == 0 or sense == 1):
+            print('Lastly, have you recently lost your sense of taste or smell? ((N=0 or Y=1)')
+            sense = input()
+            if sense == '0':
+                print('Keep enjoying some yummy food during social distancing!')
+                sense = 0
+            elif sense == '1':
+                print('Oh no, sorry to hear that!')
+                sense = 1
+
+def Diagnosis1():
+
+    global find
+    global find1
+    global score
+
+    if check == '1':
+
+        score = int(float(age)) + int(float(health)) + int(float(trip)) + int(float(fever)) + int(float(cough)) + int(float(sore)) + int(float(breath)) + int(float(chills)) + int(float(headache)) + int(float(sense))
+
+        if score == 10 or score == 9 or score == 8 or score == 7 or score == 6:
+            print('-----------------------------------------------------------')
+            print('Based on your symptoms you may have COVID-19. We can help you find a testing center.')
+            import symptoms
+
+        if score == 5 or score == 4 or score == 3:
+            print('-----------------------------------------------------------')
+            print('You show some symptoms for COVID-19 but not all.')
+            print('Would you like us to help you find a testing center? (N=0 or Y=1)')
+            find = input()
+            if find == '0':
+                print('Okay, have a nice day and stay safe - be sure to adhere to CDC guidelines. Thanks for using the COVID-19 tracker!')
+            elif find == '1':
+                import symptoms
+
+        if score == 2 or score == 1:
+            print('-----------------------------------------------------------')
+            print('You show 2 or less symptoms for COVID-19')
+            print('Have a nice day and stay safe - be sure to adhere to CDC guidelines. Thanks for using the COVID-19 tracker!')
+
+        if score == 0:
+            print('-----------------------------------------------------------')
+            print('Great, you are not showing symptoms for COVID-19. Stay safe and have a nice day! Thanks for using the COVID-19 tracker!')
+
+intro()
+response = PickACountry()
+PickADate()
+jsonData = json.loads(response.text)
+getInfo(jsonData)
+SymptomsInfo()
+QuestionOne()
+QuestionTwo()
+QuestionThree()
+QuestionFour()
+QuestionFive()
+QuestionFiveA()
+QuestionSix()
+QuestionSeven()
+QuestionEight()
+QuestionNine()
+Diagnosis1()
